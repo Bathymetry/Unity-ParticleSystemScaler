@@ -8,7 +8,6 @@ public class ParticleSystemScaler : MonoBehaviour
 	private Vector4 center;
 	private ParticleSystem myParticleSystem = null;
 	private bool isSystemRoot = false;
-	private bool isInitialized = false;
 
 	private Material material;
 
@@ -115,20 +114,21 @@ public class ParticleSystemScaler : MonoBehaviour
 		{
 			material = myParticleSystem.renderer.material;
 		}
+
+		//make sure our material is always set up with any pre-initialized scale for the first render pass
+		//this prevents 1-frame particle popping
+		if ( isSystemRoot ) {
+			ParticleSystemScale = scale;
+			UpdatePosition();
+		} else {
+			Scale = scale;
+			Center = center;
+		}
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
-		if ( !isInitialized )
-		{
-			if ( isSystemRoot )
-			{
-				ParticleSystemScale = scale;
-			}
-			isInitialized = true;
-		}
-
 		UpdatePosition();
 	}
 }
